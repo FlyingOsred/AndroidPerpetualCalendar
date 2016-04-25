@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PerpetualCalendar</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="week_number_text">WEEK</string>
+
+</resources>
