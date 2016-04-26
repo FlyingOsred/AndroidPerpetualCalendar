@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 
+import com.flyingosred.app.android.perpetualcalendar.R;
 import com.flyingosred.app.android.perpetualcalendar.adapter.MonthPagerAdapter;
 import com.flyingosred.app.android.perpetualcalendar.util.Utils;
 
@@ -13,6 +14,8 @@ import java.util.Calendar;
  * Copyright (C) 2016 Osred Brockhoist <osred.brockhoist@hotmail.com>. All Rights Reserved.
  */
 public class MonthPagerView extends ViewPager {
+
+    private static final int OFF_SCREEN_LIMIT = 3;
 
     MonthPagerAdapter mAdapter = null;
 
@@ -30,7 +33,7 @@ public class MonthPagerView extends ViewPager {
 
     public MonthPagerView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        initView();
+        initView(context);
     }
 
     public void setMinDate(long timeInMillis) {
@@ -58,8 +61,9 @@ public class MonthPagerView extends ViewPager {
     }
 
 
-    private void initView() {
-        mAdapter = new MonthPagerAdapter();
+    private void initView(Context context) {
+        setOffscreenPageLimit(OFF_SCREEN_LIMIT);
+        mAdapter = new MonthPagerAdapter(context, R.layout.recycler_view_month, R.id.recycler_view_month);
         setAdapter(mAdapter);
 
         final Calendar tempDate = Calendar.getInstance();
@@ -90,13 +94,29 @@ public class MonthPagerView extends ViewPager {
         mAdapter.setSelectedDay(mTempCalendar);
     }
 
+
+    private int getDiffMonths(Calendar start, Calendar end) {
+        final int diffYears = end.get(Calendar.YEAR) - start.get(Calendar.YEAR);
+        return end.get(Calendar.MONTH) - start.get(Calendar.MONTH) + 12 * diffYears;
+    }
+
+    private Calendar getTempCalendarForTime(long timeInMillis) {
+        if (mTempCalendar == null) {
+            mTempCalendar = Calendar.getInstance();
+        }
+        mTempCalendar.setTimeInMillis(timeInMillis);
+        return mTempCalendar;
+    }
+
     private int getPositionFromDay(long timeInMillis) {
         final int diffMonthMax = getDiffMonths(mMinDate, mMaxDate);
         final int diffMonth = getDiffMonths(mMinDate, getTempCalendarForTime(timeInMillis));
-        return MathUtils.constrain(diffMonth, 0, diffMonthMax);
+        return Utils.constrain(diffMonth, 0, diffMonthMax);
     }
 
     public long getDate() {
         return mSelectedDay.getTimeInMillis();
     }
+
+
 }
