@@ -16,6 +16,8 @@ public final class PerpetualCalendarContract {
 
     public static final Uri AUTHORITY_URI = Uri.parse("content://" + AUTHORITY);
 
+    public static final int INVALID_ID = -1;
+
     public static final class Date implements BaseColumns {
         private Date() {
         }
